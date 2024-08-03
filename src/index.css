@@ -2,3 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input:checked {
+    background-color: #4ae2c6;
+}
