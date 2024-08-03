@@ -56,7 +56,7 @@ export default function App() {
         <main className="bg-c_green200 flex items-center justify-center p-4 min-h-screen">
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="rounded-lg bg-white lg:p-8 lg:w-[40rem] flex flex-col gap-4"
+                className="rounded-lg bg-white lg:p-8 p-4 w-full lg:w-[40rem] flex flex-col gap-4"
             >
                 <h1 className="font-dm text-2xl text-c_grey900 font-bold">
                     Contact Us
@@ -150,7 +150,7 @@ export default function App() {
                     <span className={labelClassName}>
                         Query Type <span className="text-c_green600">*</span>{" "}
                     </span>
-                    <div className="lg:grid grid-cols-2 gap-3">
+                    <div className="lg:grid grid-cols-2 lg:gap-3 gap-2 flex flex-col">
                         <label
                             role="radio"
                             htmlFor="general_enquiry"
@@ -231,7 +231,7 @@ export default function App() {
                         {...register("message", {
                             required: "This field is required",
                         })}
-                        className={`resize-none rounded-md h-20 leading-4 outline-none border-[1.1px] px-4 py-2 text-sm text-c_grey900 font-dm focus:border-c_green600 ${
+                        className={`resize-none rounded-md lg:h-20 h-48 leading-4 outline-none border-[1.1px] px-4 py-2 text-sm text-c_grey900 font-dm focus:border-c_green600 ${
                             "message" in errors
                                 ? "border-c_red"
                                 : "border-c_grey500"
