@@ -65,7 +65,33 @@ pnpm run build
 
 To this day, it’s probably the most powerful form building library among the react ecosystem. It’s extremely simple to manage states, validation patterns and errors. If I want to build a form in a react app, I cannot live without it.
 
-Since `react-hook-form` already allows us to access to errors, it’s not necessary to use `@hookform/error-message.`
+Since `react-hook-form` already allows us to access to errors, it’s not necessary to use `@hookform/error-message`.
+
+On the other hand, `@hookform/resolvers` helps extracting validation logic from jsx, making it easier to maintain and understand.
+
+```tsx
+const formSchema = z.object({
+    first_name: z.string().min(1, { message: "This field is required" }),
+    last_name: z.string().min(1, { message: "This field is required" }),
+    email: z
+        .string()
+        .min(1, { message: "This field is required" })
+        .email({ message: "Please enter a valid email address" }),
+    query: z.string({ message: "Please select a query type" }),
+    message: z.string().min(1, { message: "This field is required" }),
+    consant: z
+        .boolean()
+        .refine((checked) => !!checked, {
+            message: "To submit this form, please consant to being contacted",
+        }),
+});
+
+type FormType = z.infer<typeof formSchema>;
+
+// ...
+
+const { register } = useForm<FormType>({ resolver: zodResolver(formSchema) });
+```
 
 #### sonner
 
