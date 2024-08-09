@@ -5,15 +5,26 @@ import QueryCheckedIcon from "@/assets/images/icon-radio-selected.svg";
 import FormCompleteIcon from "@/assets/images/icon-success-check.svg";
 import { ErrorMessage } from "@hookform/error-message";
 import { toast } from "sonner";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-type FormType = {
-    first_name: string;
-    last_name: string;
-    email: string;
-    query: string;
-    message: string;
-    consant: boolean;
-};
+const formSchema = z.object({
+    first_name: z.string().min(1, { message: "This field is required" }),
+    last_name: z.string().min(1, { message: "This field is required" }),
+    email: z
+        .string()
+        .min(1, { message: "This field is required" })
+        .email({ message: "Please enter a valid email address" }),
+    query: z.string({ message: "Please select a query type" }),
+    message: z.string().min(1, { message: "This field is required" }),
+    consant: z
+        .boolean()
+        .refine((checked) => !!checked, {
+            message: "To submit this form, please consant to being contacted",
+        }),
+});
+
+type FormType = z.infer<typeof formSchema>;
 
 export default function App() {
     const {
@@ -22,14 +33,18 @@ export default function App() {
         watch,
         handleSubmit,
         reset,
-    } = useForm<FormType>();
+    } = useForm<FormType>({ resolver: zodResolver(formSchema) });
 
     const onSubmit: SubmitHandler<FormType> = () => {
-        reset()
+        reset();
         toast(
             <div className="flex flex-col gap-2">
                 <p className="flex items-center gap-2">
-                    <img alt="form submit success" src={FormCompleteIcon} className="size-4 scale-90" />
+                    <img
+                        alt="form submit success"
+                        src={FormCompleteIcon}
+                        className="size-4 scale-90"
+                    />
                     <span className="font-dm text-white font-semibold text-xs">
                         Message Sent!
                     </span>
@@ -70,9 +85,7 @@ export default function App() {
                         <input
                             id="first_name"
                             type="text"
-                            {...register("first_name", {
-                                required: "This field is required",
-                            })}
+                            {...register("first_name")}
                             className={`rounded-md outline-none border-[1.1px] px-4 py-2 text-sm text-c_grey900 font-dm focus:border-c_green600 ${
                                 "first_name" in errors
                                     ? "border-c_red"
@@ -96,9 +109,7 @@ export default function App() {
                         <input
                             id="last_name"
                             type="text"
-                            {...register("last_name", {
-                                required: "This field is required",
-                            })}
+                            {...register("last_name")}
                             className={`rounded-md outline-none border-[1.1px] px-4 py-2 text-sm text-c_grey900 font-dm focus:border-c_green600 ${
                                 "last_name" in errors
                                     ? "border-c_red"
@@ -123,13 +134,7 @@ export default function App() {
                     <input
                         type="text"
                         id="email"
-                        {...register("email", {
-                            required: "This field is required",
-                            pattern: {
-                                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g,
-                                message: "Please enter a valid email address",
-                            },
-                        })}
+                        {...register("email")}
                         className={`rounded-md outline-none border-[1.1px] px-4 py-2 text-sm text-c_grey900 font-dm focus:border-c_green600 ${
                             "email" in errors
                                 ? "border-c_red"
@@ -164,9 +169,7 @@ export default function App() {
                                 id="general_enquiry"
                                 type="radio"
                                 value={"General Enquiry"}
-                                {...register("query", {
-                                    required: "Please select a query type",
-                                })}
+                                {...register("query")}
                                 className="hidden"
                             />
                             <div className="size-3 rounded-full border-[1.1px] border-c_grey900">
@@ -194,9 +197,7 @@ export default function App() {
                                 id="support_request"
                                 type="radio"
                                 value={"Support Request"}
-                                {...register("query", {
-                                    required: "Please select a query type",
-                                })}
+                                {...register("query")}
                                 className="hidden"
                             />
                             <div className="size-3 rounded-full border-[1.1px] border-c_grey900">
@@ -228,9 +229,7 @@ export default function App() {
                     </label>
                     <textarea
                         id="message"
-                        {...register("message", {
-                            required: "This field is required",
-                        })}
+                        {...register("message")}
                         className={`resize-none rounded-md lg:h-20 h-48 leading-4 outline-none border-[1.1px] px-4 py-2 text-sm text-c_grey900 font-dm focus:border-c_green600 ${
                             "message" in errors
                                 ? "border-c_red"
@@ -255,10 +254,7 @@ export default function App() {
                         <input
                             id="consant"
                             type="checkbox"
-                            {...register("consant", {
-                                required:
-                                    "To submit this form, please consant to being contacted",
-                            })}
+                            {...register("consant")}
                             className="hidden"
                         />
                         <div
